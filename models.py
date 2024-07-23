@@ -1,13 +1,12 @@
-from flask_sqlalchemy import SQLAlchemy
+
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import validates, relationship
 from datetime import date
 from sqlalchemy import Enum as PgEnum
 from enum import Enum
-from flask_bcrypt import Bcrypt
+from config import bcrypt, db
 
-db = SQLAlchemy()
-bcrypt = Bcrypt()
+
 
 users_groups = db.Table(
     'users_groups',
@@ -19,9 +18,8 @@ class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
-    # email = db.Column(db.String(120), unique=True)
     password_hash = db.Column('password_hash', db.String(128), nullable=False)
-    # phone_number = db.Column(db.String(15))
+
     
     # Relationships
     accounts = db.relationship("Account", back_populates="user")

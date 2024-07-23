@@ -1,41 +1,7 @@
-from dotenv import load_dotenv
-load_dotenv()
-from flask import Flask, jsonify, request, session
-from flask_bcrypt import Bcrypt
-from flask_migrate import Migrate
-from flask_restful import Api, Resource
-from datetime import date
-from flask_cors import CORS
 
 from models import db, User, Subscription, Transaction, TransactionType, Loan, Saving
+from config import Resource, session, request, jsonify, api, bcrypt, app, date
 
-from flask import Flask, send_from_directory
-
-app = Flask(__name__, static_folder='../frontend/build')
-
-@app.route('/')
-def serve():
-    return send_from_directory(app.static_folder, 'index.html')
-
-# Serve static files
-@app.route('/<path:path>')
-def static_proxy(path):
-    return send_from_directory(app.static_folder, path)
-
-
-
-app = Flask(__name__)
-CORS(app)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pesabank.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.json.compact = False
-app.config['SECRET_KEY'] = 'freshibarida'
-
-db.init_app(app)
-migrate = Migrate(app, db)
-bcrypt = Bcrypt(app)
-api = Api(app)
 
 # Resources 
 class ClearSession(Resource):
@@ -56,7 +22,8 @@ class Signup(Resource):
             return {'message': 'Username already exists.'}, 409
 
         new_user = User(username=username)
-        new_user.password = password  # Use the password setter to hash the password
+        # Use the password setter to hash the password
+        new_user.password = password  
         db.session.add(new_user)
         db.session.commit()
 
@@ -97,7 +64,6 @@ class CheckSession(Resource):
 
         return user.to_dict(), 200
     
-
 
 # Registering resources
 api.add_resource(ClearSession, '/clear', endpoint='clear')
