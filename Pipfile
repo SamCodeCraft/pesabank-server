@@ -19,6 +19,7 @@ python-dotenv = "*"
 flask-bcrypt = "*"
 flask-jwt-extended = "*"
 app = "*"
+ipython = "==8.13.0"
 
 [requires]
 python_full_version = "3.8.13"
